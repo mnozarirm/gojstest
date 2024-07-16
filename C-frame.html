@@ -11,7 +11,7 @@
         const div = document.getElementById('myDiagramDiv')
         const diagram = new go.Diagram(div, { "undoManager.isEnabled": true });
         diagram.nodeTemplate = new go.Node("Auto")
-            .add(new go.Shape("RoundedRectangle", { strokeWidth: -1, fill: "white" }).bind("fill", "color"))
+            .add(new go.Shape("RoundedRectangle", { strokeWidth: 1, fill: "white" }).bind("fill", "color"))
             .add(new go.TextBlock({ margin: 7, stroke: "#333" }).bind("text", "key"));
 
         diagram.model = new go.GraphLinksModel(
