@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>GOJS iframe test</title>
+</head>
+<body>
+  <iframe name="frame" style="width: 100%; height: 720px;"></iframe>
+
+  <script>
+    const frameDom = window.frames['frame'].document;
+    const divHtml = '<div id="myDiagramDiv" style="flex-grow: 1; height: 700px;"></div>';
+    frameDom.body.insertAdjacentHTML("beforeend", divHtml);
+
+    const goTag =frameDom.createElement('script');
+    goTag.src = 'go.js';
+    frameDom.head.appendChild(goTag);
+    
+    const scriptToInject = `
+    function setup() {
+      console.log('setup');
+      if (!window.go) {
+        setTimeout(setup, 200);
+        return;
+      }
+      const div = document.getElementById('myDiagramDiv');
+      const diagram = new go.Diagram(div, { "undoManager.isEnabled": true });
+
+      diagram.nodeTemplate = new go.Node("Auto")
+              .add(new go.Shape("RoundedRectangle", { strokeWidth: 0, fill: "white" }).bind("fill", "color"))
+              .add(new go.TextBlock({ margin: 8, stroke: "#333" }).bind("text", "key"));
+
+          diagram.model = new go.GraphLinksModel(
+              [
+                  { key: "Alpha", color: "lightblue" },
+                  { key: "Beta", color: "orange" },
+                  { key: "Gamma", color: "lightgreen" },
+                  { key: "Delta", color: "pink" }
+              ],
+              [
+                  { from: "Alpha", to: "Beta" },
+                  { from: "Alpha", to: "Gamma" },
+                  { from: "Beta", to: "Beta" },
+                  { from: "Gamma", to: "Delta" },
+                  { from: "Delta", to: "Alpha" }
+              ]);
+    }
+    setup();
+    `;
+
+    const scriptTag = frameDom.createElement('script');
+    scriptTag.textContent = scriptToInject;
+
+    frameDom.body.appendChild(scriptTag);
+
+  </script>
+</body>
+</html>
